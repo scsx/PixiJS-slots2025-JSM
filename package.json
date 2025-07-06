@@ -1,0 +1,17 @@
+{
+  "type": "module",
+  "name": "pixijs-jsm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "scsx",
+  "license": "ISC",
+  "dependencies": {
+    "@pixi/graphics-extras": "^7.4.0",
+    "@pixi/particle-emitter": "^5.0.8",
+    "pixi.js": "^7.4.0"
+  }
+}

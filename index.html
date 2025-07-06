@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fountains & Rockets</title>
+    <link data-rh="true" rel="icon" href="./images/favicon.png" />
+    <link rel="stylesheet" href="./index.css">
+  </head>
+  <body>
+    <div class="controls">
+      <input type="radio" id="option1" name="canvasSize" value="0" checked />
+      <label for="option1">1280x720 (video)</label>
+      <input type="radio" id="option2" name="canvasSize" value="1" />
+      <label for="option2">1024x768 (readme)</label>
+      <button class="btn" id="applySizeBtn">apply</button>
+      <a class="btn git" target="_blank" href="https://github.com/scsx/PixiJS-JSM">git</a>
+      <div id="fpsDisplay">FPS: </div>
+    </div>
+
+    <script src="./scripts/pixi.js"></script>
+    <script src="./scripts/particle-emitter.js"></script>
+    <script src="./scripts/ParticleExampleCustom.js"></script>
+    <script type="module" src="./index.js"></script>
+  </body>
+</html>
