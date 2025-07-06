@@ -10,6 +10,7 @@ let _canvasCenter
 
 // --- Variáveis do Jogo e Elementos da UI (Serão acedidos a partir do HTML) ---
 let spinButton
+let autoWinButton // Novo: Referência para o botão "Win"
 let winMessageDisplay
 let balanceDisplay // Adicionado para atualizar o saldo
 let betCostDisplay // Adicionado para exibir o custo da aposta
@@ -33,7 +34,7 @@ const REEL_WIDTH = 250 // Largura definida para cada rolo individual.
 const SYMBOL_SIZE = 160 // Tamanho uniforme para cada símbolo, agora influenciando o espaçamento do texto.
 // Ajustado de 220 para 160, correspondendo ao tamanho das imagens.
 const NUM_VISIBLE_SYMBOLS = 3 // Número de símbolos visíveis por bobina na área de jogo.
-const NUM_SYMBOLS_PER_REEL_STRIP = 5 // Aumentado para 10 para um loop mais suave e evitar lacunas visuais.
+const NUM_SYMBOLS_PER_REEL_STRIP = 10 // Aumentado para 10 para um loop mais suave e evitar lacunas visuais.
 // Deve ser maior que NUM_VISIBLE_SYMBOLS para o efeito de rolagem.
 const SPIN_DURATION_BASE = 2000 // Duração base do giro em milissegundos.
 const SPIN_COST = 100
@@ -134,8 +135,9 @@ function hideMessageBox() {
 /**
  * Inicia a animação do giro da máquina de slot.
  * Esta função lida com a desativação do botão, ocultação de mensagens e início dos movimentos dos rolos.
+ * @param {boolean} forceWin - Se verdadeiro, garante uma combinação vencedora.
  */
-function startSpin() {
+function startSpin(forceWin = false) {
   if (spinning) return // Impede um novo giro se já estiver a girar.
 
   if (balance < SPIN_COST) {
@@ -148,10 +150,23 @@ function startSpin() {
 
   spinning = true // Define o estado de giro como verdadeiro.
   spinButton.disabled = true // Desativa o botão de giro.
+  if (autoWinButton) autoWinButton.disabled = true // Desativa o botão "Win" também
   winMessageDisplay.style.opacity = '0' // Oculta quaisquer mensagens de vitória anteriores.
 
-  // Determina os resultados aleatórios para cada bobina.
-  const results = reels.map(() => Math.floor(Math.random() * slotTextures.length))
+  // Determina os resultados para cada bobina.
+  const results = []
+  if (forceWin) {
+    // Garante uma vitória: todos os símbolos serão o mesmo (o primeiro da lista de texturas)
+    const winningSymbolIndex = Math.floor(Math.random() * slotTextures.length)
+    for (let i = 0; i < 3; i++) {
+      results.push(winningSymbolIndex)
+    }
+  } else {
+    // Resultados aleatórios normais
+    for (let i = 0; i < 3; i++) {
+      results.push(Math.floor(Math.random() * slotTextures.length))
+    }
+  }
 
   let reelsStopping = 0 // Contador para rolos que terminaram de girar.
 
@@ -202,16 +217,35 @@ function startSpin() {
         reelsStopping++ // Incrementa o contador de rolos parados.
         reel.spinTween = null // Limpa o tween para indicar que o rolo parou.
 
-        // A posição da bobina já foi definida para `targetPosition` pelo tweenTo.
-        // O ticker continuará a usar esta posição.
-        // Não é necessário destruir e recriar símbolos aqui.
-        // O loop do ticker irá posicioná-los corretamente com base na reel.position final.
+        // --- LÓGICA PARA FORÇAR VITÓRIA APÓS O GIRO ---
+        if (forceWin) {
+          const winningTexture = slotTextures[results[index]] // A textura vencedora para este rolo
+
+          // Itera sobre os símbolos do rolo e define a textura para os que estão visíveis
+          // na área de jogo.
+          for (const symbol of reel.symbols) {
+            // Verifica se o centro do símbolo está dentro da área visível da slot.
+            // A área visível vai de Y=0 a Y=visibleSlotHeight (relativo ao contêiner do rolo).
+            const symbolCenterY = symbol.y
+            const visibleAreaTop = SYMBOL_SIZE / 2 // Centro do primeiro símbolo visível
+            const visibleAreaBottom = (NUM_VISIBLE_SYMBOLS - 0.5) * SYMBOL_SIZE // Centro do último símbolo visível
+
+            if (
+              symbolCenterY >= visibleAreaTop - SYMBOL_SIZE / 2 &&
+              symbolCenterY <= visibleAreaBottom + SYMBOL_SIZE / 2
+            ) {
+              symbol.texture = winningTexture
+            }
+          }
+        }
+        // --- FIM DA LÓGICA PARA FORÇAR VITÓRIA ---
 
         if (reelsStopping === reels.length) {
           // Se todos os rolos pararam, procede para verificar a vitória.
           spinning = false // Reinicia o estado de giro.
-          checkWin(results) // Realiza a verificação de vitória, passando os resultados.
+          checkWin() // Chama checkWin sem passar results, para que ela leia o estado visual.
           spinButton.disabled = false // Reativa o botão de giro para a próxima ronda.
+          if (autoWinButton) autoWinButton.disabled = false // Reativa o botão "Win"
         }
       }
     )
@@ -220,16 +254,34 @@ function startSpin() {
 
 /**
  * Verifica por uma combinação vencedora nos rolos.
- * @param {Array<number>} finalResults - Os índices das texturas resultantes para cada bobina.
+ * Não recebe `finalResults` diretamente, mas lê os símbolos visíveis.
  */
-function checkWin(finalResults) {
-  // Condição de vitória simples: todos os símbolos visíveis na linha do meio devem ser os mesmos.
-  const firstSymbolId = finalResults[0]
-  const allMatch = finalResults.every((symbolId) => symbolId === firstSymbolId)
+function checkWin() {
+  const actualVisibleTextures = []
+  reels.forEach((reel) => {
+    let middleSymbolTexture = null
+    // O meio da área visível para o símbolo é SYMBOL_SIZE * 1 (para o 2º símbolo de 3 visíveis)
+    // A posição Y do centro do símbolo no meio da área visível é SYMBOL_SIZE * 1 + SYMBOL_SIZE / 2.
+    const targetCenterY = SYMBOL_SIZE * 1 + SYMBOL_SIZE / 2
+    const tolerance = 5 // Uma pequena tolerância para comparações de ponto flutuante
+
+    // Encontra o símbolo que está mais próximo do centro da linha de vitória
+    for (const symbol of reel.symbols) {
+      if (Math.abs(symbol.y - targetCenterY) < tolerance) {
+        middleSymbolTexture = symbol.texture
+        break
+      }
+    }
+    actualVisibleTextures.push(middleSymbolTexture)
+  })
+
+  // Agora, verifica se todas as texturas visíveis reais são as mesmas e não nulas
+  const firstActualTexture = actualVisibleTextures[0]
+  const allMatch = actualVisibleTextures.every(
+    (texture) => texture !== null && texture === firstActualTexture
+  )
 
   if (allMatch) {
-    // Para uma slot real, você teria um mapa de pagamentos para cada símbolo.
-    // Aqui, apenas um pagamento fixo por combinação.
     const winAmount = 500 // Exemplo de valor de vitória
     balance += winAmount
     updateBalanceDisplay()
@@ -265,6 +317,7 @@ export async function initSlotGame(appInstance, canvasCenterInstance) {
 
   // Obtém referências aos elementos da UI HTML agora que o DOM está pronto.
   spinButton = document.getElementById('spinButton')
+  autoWinButton = document.getElementById('autoWin') // Novo: Referência para o botão "Win"
   winMessageDisplay = document.getElementById('winMessage')
   balanceDisplay = document.getElementById('balance') // Referência ao display do saldo
   betCostDisplay = document.getElementById('bet-cost') // Referência ao display do custo da aposta
@@ -392,12 +445,20 @@ export async function initSlotGame(appInstance, canvasCenterInstance) {
 
   // Adiciona um event listener ao botão de giro no HTML.
   if (spinButton) {
-    spinButton.addEventListener('click', startSpin)
+    spinButton.addEventListener('click', () => startSpin(false)) // Passa false para giro normal
     spinButton.disabled = false // Estado inicial: Ativa o botão de giro assim que o jogo é carregado.
   } else {
     console.error(
       "Botão de giro com ID 'spinButton' não encontrado no HTML. O jogo de slot não pode ser iniciado."
     )
+  }
+
+  // Adiciona event listener para o novo botão "Win"
+  if (autoWinButton) {
+    autoWinButton.addEventListener('click', () => startSpin(true)) // Passa true para forçar vitória
+    autoWinButton.disabled = false // Ativa o botão "Win"
+  } else {
+    console.warn("Botão 'autoWin' não encontrado no HTML.")
   }
 
   console.log('Módulo PixiJS Slots Demo inicializado e pronto para jogar!')
