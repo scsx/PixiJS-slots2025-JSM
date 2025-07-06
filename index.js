@@ -1,152 +1,73 @@
-import { fountainConfig } from './scripts/emitterConfigs.js'
-import { explodeRocket } from './scripts/explodeRocket.js'
+// index.js
 
-// Create a PIXI Application
-const app = new PIXI.Application({
-  width: 1280,
-  height: 720,
-  backgroundColor: 0x000000
+// Import the Application class from PixiJS.
+// IMPORTANT: For PixiJS v7+ and ES Modules, it's recommended to import components this way,
+// instead of relying on the global PIXI object (e.g., PIXI.Application, PIXI.Sprite).
+import { Application } from 'pixi.js'
+
+// Import the main function for the fireworks animations.
+// This module will be called to trigger the fireworks animation upon a win.
+// REMINDER FOR DEVELOPER: This import and the direct call to `runFireworksLoop` below
+// will be removed once the main slots game logic is fully implemented,
+// and the fireworks animation should only be triggered as part of a win condition.
+import { runFireworksLoop } from './scripts/fireworks.js'
+
+// --- PixiJS Application Setup ---
+
+/**
+ * Creates the main PixiJS application instance.
+ * This application manages the rendering canvas, the game loop (ticker),
+ * and the visual hierarchy (stage).
+ * @type {PIXI.Application}
+ */
+const app = new Application({
+  width: 1280, // Width of the rendering area for the game
+  height: 720, // Height of the rendering area for the game
+  backgroundColor: 0x000000, // Background color of the canvas (black)
+  antialias: true, // Enables anti-aliasing for smoother edges of rendered graphics
+  resolution: window.devicePixelRatio || 1, // Adjusts resolution for high-DPI (retina) screens
+  autoDensity: true // PixiJS automatically adjusts the CSS size of the canvas based on its resolution
 })
 
-let canvasCenter = {
+// Append the PixiJS canvas to the main document body.
+// The canvas will be the primary element where your game content is drawn.
+document.body.appendChild(app.view)
+
+/**
+ * Calculates and stores the center coordinates of the PixiJS canvas.
+ * This is often useful for positioning elements centrally on the screen.
+ * @type {{x: number, y: number}}
+ */
+const canvasCenter = {
   x: app.renderer.width / 2,
   y: app.renderer.height / 2
 }
 
-document.body.appendChild(app.view)
+// ------------------------------------------------------------------------------------
+// MAIN ENTRY POINT FOR CURRENT DEMO:
+// INITIAL CALL TO FIREWORKS.
+// ------------------------------------------------------------------------------------
 
-// Canvas size
-const sizeOptions = [
-  { width: 1280, height: 720 }, // Option 1
-  { width: 1024, height: 768 } // Option 2
-]
+// TEMPORARY CALL: Currently, we are calling the fireworks function directly to test its modularization.
+// DEVELOPER INSTRUCTION: WHEN STARTING TO IMPLEMENT THE SLOTS GAME, REMOVE THIS DIRECT CALL.
+// The `runFireworksLoop` function should ONLY be called when a player wins in the slots game.
+/**
+ * Initiates the fireworks animation sequence.
+ * Passes the PixiJS application instance and the canvas center to the fireworks module.
+ * @param {PIXI.Application} app - The PixiJS application instance.
+ * @param {{x: number, y: number}} canvasCenter - The canvas center coordinates.
+ */
+runFireworksLoop(app, canvasCenter)
 
-const applyCanvasSize = () => {
-  const selectedOption = document.querySelector('input[name="canvasSize"]:checked')
-  if (selectedOption) {
-    const index = parseInt(selectedOption.value, 10)
-    const { width, height } = sizeOptions[index]
-    app.renderer.resize(width, height)
-  }
-}
+// ------------------------------------------------------------------------------------
+// FUTURE DEVELOPMENT AREA: SLOTS GAME LOGIC
+// ------------------------------------------------------------------------------------
 
-const applySizeBtn = document.getElementById('applySizeBtn')
-applySizeBtn.addEventListener('click', applyCanvasSize)
-
-// Update the FPS display
-const updateFPS = () => {
-  const fps = app.ticker.FPS.toFixed(2) // Get the current FPS
-  fpsDisplay.textContent = `FPS: ${fps}` // Update the text content of the div
-}
-
-app.ticker.add(() => {
-  updateFPS()
-})
-
-// Function to create and manage firework
-const createFirework = (type, colour, duration, x, y, velocityX, velocityY) => {
-  // FOUNTAIN.
-  if (type === 'Fountain') {
-    fountainConfig.behaviors[3].config.color.list[1].value = colour
-
-    // Instantiate emitter, based on https://github.com/pixijs/particle-emitter/blob/master/docs/examples/fountain.html
-    new ParticleExample(
-      app,
-      ['assets/fountain.png'],
-      fountainConfig,
-      canvasCenter.x - x,
-      canvasCenter.y - y,
-      duration
-    )
-
-    // ROCKET
-  } else if (type === 'Rocket') {
-    let rocket
-    rocket = PIXI.Sprite.from('./assets/particle.png')
-    rocket.tint = parseInt(colour, 16)
-    rocket.position.set(canvasCenter.x - x, canvasCenter.y - y)
-    app.stage.addChild(rocket)
-
-    // Animate rocket.
-    app.ticker.add((delta) => loopRocket(delta))
-
-    const loopRocket = (delta) => {
-      // Calculate displacement based on velocity and time (delta)
-      const displacementX = (velocityX * delta) / 1000
-      const displacementY = (velocityY * delta) / 100 // Should be 1000 but rockets were exploding right at the beggining.
-
-      // Update rocket's position
-      rocket.x += displacementX
-      rocket.y += displacementY * -1
-    }
-
-    setTimeout(() => {
-      app.stage.removeChild(rocket)
-      explodeRocket(app, rocket.x, rocket.y, colour) // Call explosion on last position.
-    }, duration)
-  }
-}
-
-// Error message.
-const showErrorText = (errorMessage) => {
-  const errorText = new PIXI.Text(errorMessage, {
-    fontFamily: 'Arial',
-    fontSize: 30,
-    fill: 'white',
-    align: 'center'
-  })
-
-  errorText.x = app.renderer.width / 2
-  errorText.y = app.renderer.height / 2
-  errorText.anchor.set(0.5)
-
-  app.stage.addChild(errorText)
-}
-
-const runFireworksLoop = () => {
-  // Fetch the XML file
-  fetch('./data/fireworks.xml')
-    .then((response) => response.text())
-    .then((xmlData) => {
-      const parser = new DOMParser()
-      const xml = parser.parseFromString(xmlData, 'text/xml')
-      const fireworkElements = xml.getElementsByTagName('Firework')
-
-      // Total duration
-      let totalDuration = 0
-
-      for (let i = 0; i < fireworkElements.length; i++) {
-        const firework = fireworkElements[i]
-        const beginTime = parseInt(firework.getAttribute('begin'))
-        const type = firework.getAttribute('type')
-        const colour = firework.getAttribute('colour')
-        const duration = parseInt(firework.getAttribute('duration'))
-        const position = firework.getElementsByTagName('Position')[0]
-        const x = parseFloat(position.getAttribute('x'))
-        const y = parseFloat(position.getAttribute('y'))
-        const velocityElement = firework.getElementsByTagName('Velocity')[0]
-        let velocityX = 0
-        let velocityY = 0
-        if (velocityElement) {
-          velocityX = parseFloat(velocityElement.getAttribute('x'))
-          velocityY = parseFloat(velocityElement.getAttribute('y'))
-        }
-
-        totalDuration = Math.max(totalDuration, beginTime + duration)
-
-        // Create firework based on extracted attributes.
-        setTimeout(() => {
-          createFirework(type, colour, duration, x, y, velocityX, velocityY)
-        }, beginTime)
-      }
-
-      // Animate again after the total duration.
-      setTimeout(runFireworksLoop, totalDuration)
-    })
-    .catch((error) => {
-      showErrorText(`An error occurred: ${error}`)
-      console.error('Error fetching XML file:', error)
-    })
-}
-
-runFireworksLoop()
+// THIS IS WHERE ALL THE MAIN LOGIC FOR YOUR SLOTS GAME WILL BE ADDED.
+// For example, this section will include:
+// - Loading of slot symbol assets.
+// - Creation of reels and individual symbols.
+// - Logic for spinning and stopping the reels.
+// - Checking for winning lines/combinations.
+// - Handling UI interactions (e.g., the "Spin" button).
+// - Integrating the `runFireworksLoop` animation ONLY AFTER a win condition is met.
