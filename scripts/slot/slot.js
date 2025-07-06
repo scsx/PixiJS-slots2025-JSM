@@ -221,21 +221,37 @@ function startSpin(forceWin = false) {
         if (forceWin) {
           const winningTexture = slotTextures[results[index]] // A textura vencedora para este rolo
 
-          // Itera sobre os símbolos do rolo e define a textura para os que estão visíveis
-          // na área de jogo.
-          for (const symbol of reel.symbols) {
-            // Verifica se o centro do símbolo está dentro da área visível da slot.
-            // A área visível vai de Y=0 a Y=visibleSlotHeight (relativo ao contêiner do rolo).
-            const symbolCenterY = symbol.y
-            const visibleAreaTop = SYMBOL_SIZE / 2 // Centro do primeiro símbolo visível
-            const visibleAreaBottom = (NUM_VISIBLE_SYMBOLS - 0.5) * SYMBOL_SIZE // Centro do último símbolo visível
+          // Encontra os símbolos que estão visíveis na área de jogo e define suas texturas.
+          // O objetivo é que o símbolo do meio seja o vencedor, e os outros dois sejam aleatórios.
+          const visibleSymbols = []
+          // Coleta os símbolos que estão atualmente dentro da área visível da bobina
+          // A área visível é de Y=0 a Y=NUM_VISIBLE_SYMBOLS * SYMBOL_SIZE (relativo ao contêiner do rolo)
+          // Consideramos uma pequena margem para garantir que pegamos os símbolos corretos.
+          const visibleAreaMinY = -SYMBOL_SIZE / 2 // Um pouco acima do topo para capturar o símbolo que "entra"
+          const visibleAreaMaxY = (NUM_VISIBLE_SYMBOLS + 0.5) * SYMBOL_SIZE // Um pouco abaixo da base
 
+          for (const symbol of reel.symbols) {
+            // Verifica se alguma parte do símbolo está dentro da área visível
             if (
-              symbolCenterY >= visibleAreaTop - SYMBOL_SIZE / 2 &&
-              symbolCenterY <= visibleAreaBottom + SYMBOL_SIZE / 2
+              symbol.y + SYMBOL_SIZE / 2 > visibleAreaMinY &&
+              symbol.y - SYMBOL_SIZE / 2 < visibleAreaMaxY
             ) {
-              symbol.texture = winningTexture
+              visibleSymbols.push(symbol)
             }
+          }
+
+          // Ordena os símbolos visíveis pela sua posição Y para garantir a ordem (topo para baixo)
+          visibleSymbols.sort((a, b) => a.y - b.y)
+
+          if (visibleSymbols.length >= NUM_VISIBLE_SYMBOLS) {
+            // Define a textura do símbolo do meio para a textura vencedora
+            visibleSymbols[1].texture = winningTexture // Índice 1 é o símbolo do meio (0-indexado)
+
+            // Define as texturas dos símbolos superior e inferior para texturas aleatórias
+            visibleSymbols[0].texture =
+              slotTextures[Math.floor(Math.random() * slotTextures.length)]
+            visibleSymbols[2].texture =
+              slotTextures[Math.floor(Math.random() * slotTextures.length)]
           }
         }
         // --- FIM DA LÓGICA PARA FORÇAR VITÓRIA ---
