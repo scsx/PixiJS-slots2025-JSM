@@ -6,6 +6,8 @@ body {
 
 .balance {
   position: absolute;
+  top: 3px;
+  left: 129px;
   width: 331px;
   height: 51px;
   background-image: url('./assets/ui/wood-label.png');
@@ -20,6 +22,10 @@ body {
   justify-content: center;
   align-items: center;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.balance span {
+  font-size: 30px;
 }
 
 .frame-bg {
