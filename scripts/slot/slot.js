@@ -330,16 +330,12 @@ export async function initSlotGame(appInstance, canvasCenterInstance) {
   autoWinButton = document.getElementById('autoWin'); // Novo: Referência para o botão "Win"
   winMessageDisplay = document.getElementById('winMessage');
   balanceDisplay = document.getElementById('balance'); // Referência ao display do saldo
-  betCostDisplay = document.getElementById('bet-cost'); // Referência ao display do custo da aposta
   messageBox = document.getElementById('message-box');
   messageText = document.getElementById('message-text');
   messageOkButton = document.getElementById('message-ok-button');
 
-  // Define o custo da aposta e atualiza o saldo inicial
-  if (betCostDisplay) {
-      betCostDisplay.textContent = SPIN_COST;
-  }
-  updateBalanceDisplay(); // Atualiza o saldo inicial
+  
+  updateBalanceDisplay();
 
   // Event listener para o botão OK da caixa de mensagem
   if (messageOkButton) {

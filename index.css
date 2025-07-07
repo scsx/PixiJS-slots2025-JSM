@@ -1,169 +1,62 @@
-* {
-  padding: 0;
-  margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #838383;
-}
 body {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background-color: #1a202c;
-  font-family: 'Inter', sans-serif;
-  color: #e2e8f0;
-  padding: 20px;
+  font-family: 'Bangers', system-ui;
   box-sizing: border-box;
-}
-.controls {
-  margin-bottom: 1rem;
-  display: flex;
-}
-.controls label {
-  margin-right: 1rem;
-}
-.btn {
-  padding: 3px 10px 6px 10px;
-  background-color: #272727;
-  color: #ccc;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 13px;
-}
-.btn:hover {
-  background-color: #3d3f45;
-}
-.btn.git {
-  text-decoration: none;
-  margin: 0 0.5rem;
+  background-color: #0f3461;
 }
 
-.controls {
-  margin-bottom: 20px;
+.balance {
+  position: absolute;
+  width: 331px;
+  height: 51px;
+  background-image: url('./assets/ui/wood-label.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-size: 25px;
+  color: #ffd700;
+  letter-spacing: 2px;
+  z-index: 60;
   display: flex;
-  gap: 10px;
+  justify-content: center;
   align-items: center;
-  background-color: #2d3748;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
 }
-.controls label {
-  font-size: 16px;
+
+.frame-bg {
+  background-image: url('./assets/ui/frame.png');
 }
-.btn {
-  background-color: #4299e1;
-  color: white;
-  padding: 8px 15px;
-  border-radius: 5px;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
-}
-.btn:hover {
-  background-color: #3182ce;
-}
-.git {
-  background-color: #6c757d;
-}
-.git:hover {
-  background-color: #5a6268;
-}
-#fpsDisplay {
-  background-color: #4a5568;
-  padding: 8px 15px;
-  border-radius: 5px;
-  font-weight: bold;
-}
-#game-area {
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-  /* As dimensões são definidas no JS, mas estes estilos são bons como fallback/base */
-}
-#spinButton {
-  margin-top: 30px;
-  padding: 18px 40px;
-  font-size: 28px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 50px;
+
+.spin-button {
+  width: 135px;
+  height: 82px;
+  background-image: url('./assets/ui/wood-btn.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+  font-size: 45px;
+  color: #ffd700;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  font-weight: bold;
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+  letter-spacing: 4px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
-#spinButton:hover {
-  background-color: #45a049;
-  transform: translateY(-3px);
+
+.spin-button:hover {
+  transform: translateY(-0.25rem);
 }
-#spinButton:active {
-  background-color: #3e8e41;
+
+.spin-button:active {
   transform: translateY(0);
 }
-#winMessage {
-  margin-top: 20px;
-  font-size: 48px;
-  color: #ffd700;
-  font-weight: bold;
-  opacity: 0;
-  transition: opacity 0.5s ease-out;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-  text-align: center;
-}
-.game-info {
-  display: flex;
-  justify-content: space-around;
-  width: 100%; /* Ocupa a largura total do seu contêiner */
-  max-width: 600px; /* Limita a largura para melhor leitura */
-  margin-bottom: 20px; /* Espaço abaixo */
-  gap: 1rem; /* Espaçamento entre os itens */
-}
-.game-info div {
-  background-color: #4a5568; /* Tailwind gray-600 */
-  padding: 0.75rem 1.25rem; /* py-3 px-5 */
-  border-radius: 0.75rem; /* rounded-xl */
-  font-weight: bold;
-  text-align: center;
-  flex-grow: 1; /* Faz com que os itens cresçam para preencher o espaço */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-/* Estilos para a caixa de mensagem (Tailwind-like) */
+
 .message-box {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #2d3748; /* gray-700 */
-  color: #e2e8f0; /* gray-200 */
-  padding: 2rem;
-  border-radius: 1rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  z-index: 1000;
-  display: none; /* Hidden by default */
-  text-align: center;
-  border: 1px solid #4a5568; /* gray-600 */
-}
-.message-box button {
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  background-color: #4299e1; /* blue-500 */
-  color: white;
-  border-radius: 0.5rem;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.message-box button:hover {
-  background-color: #3182ce; /* blue-600 */
 }

@@ -12,7 +12,7 @@ import { initSlotGame } from './scripts/slot/slot.js'
 const app = new Application({
   width: 1280, // Width of the rendering area for the game
   height: 720, // Height of the rendering area for the game
-  backgroundColor: 0x000000, // Background color of the canvas (black)
+  backgroundColor: "#0f3461", // Background color of the canvas (black)
   antialias: true // Enables anti-aliasing for smoother edges of rendered graphics
 })
 

@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fountains & Rockets</title>
     <link data-rh="true" rel="icon" href="./assets/favicon.png" />
-    <link rel="stylesheet" href="./index.css" />
-    <!-- Adiciona o CDN do Tailwind CSS para o estilo dos elementos de UI -->
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Adiciona a fonte Inter para consistência com o slot.js -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
-      rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="index.css" />
 
     <script type="importmap">
       {
@@ -24,88 +23,64 @@
     </script>
   </head>
 
-  <body>
-    <div class="controls">
+  <body class="flex flex-col items-center justify-center min-h-screen">
+    <!--  <div class="controls mb-5 flex gap-2 items-center bg-gray-700 p-4 rounded-lg shadow-xl">
       <input type="radio" id="option1" name="canvasSize" value="0" checked />
-      <label for="option1">1280x720 (video)</label>
+      <label for="option1" class="text-base">1280x720 (video)</label>
       <input type="radio" id="option2" name="canvasSize" value="1" />
-      <label for="option2">1024x768 (readme)</label>
-      <button class="btn" id="applySizeBtn">apply</button>
-      <a class="btn git" target="_blank" href="https://github.com/scsx/PixiJS-JSM">git</a>
-      <div id="fpsDisplay">FPS:</div>
-    </div>
-
-    <div class="game-info">
-      <div>Saldo: <span id="balance">0</span></div>
-      <div>Custo da Aposta: <span id="bet-cost">0</span></div>
-    </div>
-
-    <div
-      id="game-area"
-      style="
-        width: 1280px;
-        height: 720px;
-        background-color: #333;
-        margin-top: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-      "></div>
-
-    <div class="flex">
+      <label for="option2" class="text-base">1024x768 (readme)</label>
       <button
-        id="spinButton"
-        style="
-          margin-top: 30px;
-          padding: 18px 40px;
-          font-size: 28px;
-          background-color: #4caf50;
-          color: white;
-          border: none;
-          border-radius: 50px;
-          cursor: pointer;
-          transition: background-color 0.3s ease, transform 0.2s ease;
-          font-weight: bold;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-        ">
-        Spin
+        id="applySizeBtn"
+        class="bg-blue-500 text-white py-2 px-4 rounded-md transition-colors duration-300 hover:bg-blue-600">
+        apply
       </button>
-      <button
-        id="autoWin"
-        style="
-          margin-top: 30px;
-          padding: 18px 40px;
-          font-size: 28px;
-          background-color: #4caf50;
-          color: white;
-          border: none;
-          border-radius: 50px;
-          cursor: pointer;
-          transition: background-color 0.3s ease, transform 0.2s ease;
-          font-weight: bold;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-        ">
-        Win
-      </button>
+      <a
+        class="bg-gray-600 text-white py-2 px-4 rounded-md transition-colors duration-300 hover:bg-gray-700 no-underline"
+        target="_blank"
+        href="https://github.com/scsx/PixiJS-JSM"
+        >git</a
+      >
+      <div id="fpsDisplay" class="bg-gray-600 py-2 px-4 rounded-md font-bold">FPS:</div>
+    </div> -->
+
+    <div id="game-display-wrapper" class="relative w-[1408px] h-[783px]">
+      <div class="balance">
+        Balance: <span id="balance" class="ml-4 text-white">0</span>
+      </div>
+      <div
+        class="absolute inset-0 frame-bg bg-contain bg-center bg-no-repeat z-40 pointer-events-none top-4"></div>
+      <div
+        id="game-area"
+        class="absolute w-[1280px] h-[720px] z-30 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+
+      <div class="absolute bottom-0 z-50 flex mt-8 space-x-4 left-1/2 -translate-x-1/2">
+        <button
+          id="spinButton"
+          class="spin-button w-[135px] h-[82px] bg-cover bg-center bg-no-repeat text-3xl text-[#ffd700] cursor-pointer transition-all duration-300 font-bold uppercase tracking-wide shadow-lg hover:-translate-y-1 active:translate-y-0">
+          Spin
+        </button>
+        <button
+          id="autoWin"
+          class="spin-button w-[135px] h-[82px] bg-cover bg-center bg-no-repeat text-3xl text-[#ffd700] cursor-pointer transition-all duration-300 font-bold uppercase tracking-wide shadow-lg hover:-translate-y-1 active:translate-y-0">
+          Win
+        </button>
+      </div>
     </div>
 
     <div
       id="winMessage"
-      style="
-        margin-top: 20px;
-        font-size: 48px;
-        color: #ffd700;
-        font-weight: bold;
-        opacity: 0;
-        transition: opacity 0.5s ease-out;
-        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-      "></div>
+      class="absolute bottom-8 left-8 mt-5 text-5xl text-yellow-400 font-bold opacity-0 transition-opacity duration-500 ease-out text-center"></div>
 
     <!-- Warnings -->
-    <div id="message-box" class="message-box">
+    <div
+      id="message-box"
+      class="absolute bottom-8 right-8 message-box bg-gray-700 text-gray-200 p-8 rounded-xl shadow-2xl z-50 hidden text-center border border-gray-600">
       <p id="message-text"></p>
-      <button id="message-ok-button">OK</button>
+      <button
+        id="message-ok-button"
+        class="mt-4 py-2 px-4 text-base bg-blue-500 text-white rounded-lg border-none cursor-pointer transition-colors duration-300 hover:bg-blue-600">
+        OK
+      </button>
     </div>
 
     <script type="module" src="./index.js"></script>
