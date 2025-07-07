@@ -1,7 +1,5 @@
-// index.js
-
 import { Application } from 'pixi.js'
-import { initSlotGame } from './scripts/slot/slot.js'
+import { initSlotGame } from './scripts/slot/slotGame.js'
 
 // --- PixiJS Application Setup ---
 
@@ -12,7 +10,7 @@ import { initSlotGame } from './scripts/slot/slot.js'
 const app = new Application({
   width: 1280, // Width of the rendering area for the game
   height: 720, // Height of the rendering area for the game
-  backgroundColor: "#0f3461", // Background color of the canvas (black)
+  backgroundColor: '#0f3461',
   antialias: true // Enables anti-aliasing for smoother edges of rendered graphics
 })
 
@@ -45,10 +43,7 @@ const canvasCenter = {
  * @param {{x: number, y: number}} canvasCenter - The canvas center coordinates.
  */
 async function startApp() {
-  // Removido: app.init() não é uma função no PixiJS v7.
-  // A inicialização é tratada pelo construtor da Application.
-  // O carregamento de assets é feito dentro de initSlotGame.
-  await initSlotGame(app, canvasCenter) // initSlotGame é async internamente
+  await initSlotGame(app, canvasCenter) // initSlotGame is internally async.
 }
 
-startApp() // Chama a função que inicia tudo
+startApp()
