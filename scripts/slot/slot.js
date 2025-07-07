@@ -1,6 +1,4 @@
-// slot.js
-// This file contains all the PixiJS slot game logic.
-
+// TODO: remove unused vars
 import { Application, Assets, Container, Sprite, Graphics } from 'pixi.js'
 
 let _app
