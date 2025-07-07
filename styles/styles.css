@@ -3,7 +3,7 @@ body {
   font-family: 'Bangers', system-ui;
   box-sizing: border-box;
   background-color: #0f3461;
-  background-image: url('./assets/ui/bg.jpg');
+  background-image: url('../assets/ui/bg.jpg');
   background-size: contain;
   background-repeat: no-repeat;
 }
@@ -14,7 +14,7 @@ body {
   right: 0;
   bottom: 0;
   width: 50%;
-  background-image: url('./assets/ui/bg.jpg');
+  background-image: url('../assets/ui/bg.jpg');
   background-size: cover;
   background-position: right;
   background-repeat: no-repeat;
@@ -35,10 +35,9 @@ body {
 
 .header {
   position: absolute;
-  left: 30px;
   width: 900px;
   height: 100px;
-  background-image: url('./assets/ui/wood-label-gemini.png');
+  background-image: url('../assets/ui/wood-label-gemini.png');
   background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
@@ -58,7 +57,7 @@ body {
   left: 30px;
   width: 331px;
   height: 51px;
-  background-image: url('./assets/ui/wood-label.png');
+  background-image: url('../assets/ui/wood-label.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -77,18 +76,18 @@ body {
 }
 
 .frame-bg {
-  background-image: url('./assets/ui/frame.png');
+  background-image: url('../assets/ui/frame.png');
 }
 
 .spin-button {
   width: 135px;
   height: 82px;
-  background-image: url('./assets/ui/wood-btn.png');
+  background-image: url('../assets/ui/wood-btn.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-  font-size: 45px;
+  font-size: 50px;
   color: #ffd700;
   cursor: pointer;
   transition-property: all;
