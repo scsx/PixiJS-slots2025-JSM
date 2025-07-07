@@ -44,34 +44,25 @@
       <div id="fpsDisplay" class="bg-gray-600 py-2 px-4 rounded-md font-bold">FPS:</div>
     </div> -->
 
-    <div id="game-display-wrapper" class="relative w-[1408px] h-[783px]">
-      <div class="header absolute left-1/2 -translate-x-1/2 -top-[50px]">
-        <h1 class="h1 mt-2">Caça-níquel do Pirata</h1>
-      </div>
-      <div class="balance">Saldo: <span id="balance" class="ml-4 text-white">0</span></div>
+    <div class="relative w-[1408px] h-[783px]">
       <div
         class="absolute inset-0 frame-bg bg-contain bg-center bg-no-repeat z-40 pointer-events-none top-4"></div>
+      <div class="header absolute left-1/2 -translate-x-1/2 -top-[50px]">
+        <h1 class="h1">Caça-níquel do Pirata</h1>
+      </div>
+      <div class="balance">Saldo: <span id="balance" class="ml-4 text-white">0</span></div>
+      <div id="result" class="result">
+        <p id="resultMessage" class="result-message"></p>
+      </div>
       <div
         id="game-area"
         class="absolute w-[1280px] h-[720px] z-30 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -mt-4"></div>
 
       <div class="absolute bottom-0 z-50 flex mt-8 space-x-4 left-1/2 -translate-x-1/2">
-        <button
-          id="spinButton"
-          class="spin-button w-[135px] h-[82px] bg-cover bg-center bg-no-repeat text-3xl text-[#ffd700] cursor-pointer transition-all duration-300 font-bold uppercase tracking-wide shadow-lg hover:-translate-y-1 active:translate-y-0">
-          Spin
-        </button>
-        <button
-          id="autoWin"
-          class="spin-button w-[135px] h-[82px] bg-cover bg-center bg-no-repeat text-3xl text-[#ffd700] cursor-pointer transition-all duration-300 font-bold uppercase tracking-wide shadow-lg hover:-translate-y-1 active:translate-y-0">
-          Win
-        </button>
+        <button id="spinButton" class="spin-button">Spin</button>
+        <button id="autoWin" class="spin-button">Win</button>
       </div>
     </div>
-
-    <div
-      id="winMessage"
-      class="absolute bottom-8 left-8 mt-5 text-5xl text-yellow-400 font-bold opacity-0 transition-opacity duration-500 ease-out text-center"></div>
 
     <!-- Warnings -->
     <div
