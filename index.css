@@ -2,6 +2,8 @@ body {
   font-family: 'Bangers', system-ui;
   box-sizing: border-box;
   background-color: #0f3461;
+  background-image: url('./assets/ui/bg.jpg');
+  background-size: contain;
 }
 
 .balance {
