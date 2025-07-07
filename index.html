@@ -24,6 +24,7 @@
   </head>
 
   <body class="flex flex-col items-center justify-center min-h-screen">
+    <div class="deco-right"></div>
     <!--  <div class="controls mb-5 flex gap-2 items-center bg-gray-700 p-4 rounded-lg shadow-xl">
       <input type="radio" id="option1" name="canvasSize" value="0" checked />
       <label for="option1" class="text-base">1280x720 (video)</label>
@@ -44,9 +45,10 @@
     </div> -->
 
     <div id="game-display-wrapper" class="relative w-[1408px] h-[783px]">
-      <div class="balance">
-        Balance: <span id="balance" class="ml-4 text-white">0</span>
+      <div class="header absolute left-1/2 -translate-x-1/2 -top-[50px]">
+        <h1 class="h1 mt-2">Caça-níquel do Pirata</h1>
       </div>
+      <div class="balance">Balance: <span id="balance" class="ml-4 text-white">0</span></div>
       <div
         class="absolute inset-0 frame-bg bg-contain bg-center bg-no-repeat z-40 pointer-events-none top-4"></div>
       <div

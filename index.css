@@ -1,15 +1,61 @@
 body {
+  position: relative;
   font-family: 'Bangers', system-ui;
   box-sizing: border-box;
   background-color: #0f3461;
   background-image: url('./assets/ui/bg.jpg');
   background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.deco-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 50%;
+  background-image: url('./assets/ui/bg.jpg');
+  background-size: cover;
+  background-position: right;
+  background-repeat: no-repeat;
+}
+
+.h1 {
+  position: relative;
+  margin-top: -20px;
+  font-size: 55px;
+  color: #ffd700;
+  letter-spacing: 2px;
+  z-index: 60;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.header {
+  position: absolute;
+  left: 30px;
+  width: 900px;
+  height: 100px;
+  background-image: url('./assets/ui/wood-label-gemini.png');
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-size: 25px;
+  color: #ffd700;
+  letter-spacing: 2px;
+  z-index: 60;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
 }
 
 .balance {
   position: absolute;
-  top: 3px;
-  left: 129px;
+  top: 11px;
+  left: 30px;
   width: 331px;
   height: 51px;
   background-image: url('./assets/ui/wood-label.png');
@@ -56,6 +102,7 @@ body {
 
 .spin-button:hover {
   transform: translateY(-0.25rem);
+  color: white;
 }
 
 .spin-button:active {
@@ -67,4 +114,14 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+p#message-text {
+  font-size: 45px;
+  color: #ffd700;
+}
+
+#message-ok-button {
+  font-size: 45px;
+  padding: 20px;
 }
