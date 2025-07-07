@@ -7,11 +7,8 @@ import {
   Assets,
   Container,
   Sprite,
-  Text,
-  TextStyle,
   Graphics,
-  BlurFilter
-} from 'pixi.js' // Adicionado BlurFilter
+} from 'pixi.js'
 
 // Variáveis globais para armazenar a instância da aplicação PixiJS e o centro do canvas.
 let _app
@@ -165,11 +162,6 @@ function startSpin(forceWin = false) {
   winMessageDisplay.style.opacity = '0' // Oculta quaisquer mensagens de vitória anteriores.
   winMessageDisplay.classList.remove('win-bg', 'lose-bg') // Remove classes de background anteriores
 
-  // Aplica o efeito de blur ao iniciar o giro
-  reels.forEach((reel) => {
-    reel.blurFilter.blur = 5 // Valor de blur inicial
-  })
-
   // Determina os resultados para cada bobina.
   const results = []
   if (forceWin) {
@@ -233,9 +225,6 @@ function startSpin(forceWin = false) {
         // Função de callback executada quando um rolo termina o seu giro.
         reelsStopping++ // Incrementa o contador de rolos parados.
         reel.spinTween = null // Limpa o tween para indicar que o rolo parou.
-
-        // Anima o blur de volta para 0 quando o rolo para
-        tweenTo(reel.blurFilter, 'blur', 0, 300, lerp, null)
 
         // --- LÓGICA PARA FORÇAR VITÓRIA APÓS O GIRO ---
         if (forceWin) {
@@ -321,9 +310,9 @@ function checkWin() {
     const winAmount = 500 // Exemplo de valor de vitória
     balance += winAmount
     updateBalanceDisplay()
-    showWinMessage(`GANHOU ${winAmount}!`, true) // Passa true para indicar vitória
+    showWinMessage(`GANHASTE ${winAmount}!`, true) // Passa true para indicar vitória
   } else {
-    showWinMessage('Tente novamente!', false) // Passa false para indicar derrota
+    showWinMessage('AZAR!', false) // Passa false para indicar derrota
   }
 }
 
@@ -424,9 +413,7 @@ export async function initSlotGame(appInstance, canvasCenterInstance) {
       position: 0, // Posição de scroll atual do rolo.
       previousPosition: 0, // Posição de scroll anterior para rastreio.
       spinTween: null, // Propriedade para guardar o objeto tween atual para parar o rolo.
-      blurFilter: new BlurFilter(0) // Inicializa o filtro de blur
     }
-    rc.filters = [reel.blurFilter] // Aplica o filtro ao contêiner do rolo
 
     // Preenche o rolo com símbolos.
     for (let j = 0; j < NUM_SYMBOLS_PER_REEL_STRIP; j++) {
