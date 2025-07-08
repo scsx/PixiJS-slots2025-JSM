@@ -12,6 +12,11 @@ export const fountainConfig = {
     x: 0,
     y: 0
   },
+  speed: {
+    start: 700,
+    end: 700,
+    minimumSpeedMultiplier: 1
+  },
   behaviors: [
     {
       type: 'alpha',

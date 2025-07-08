@@ -85,9 +85,12 @@ class ParticleExample {
         this.bg.scale.y = this.app.renderer.height
         this.stage.addChild(this.bg)
 
+        console.log('Config object passed to Emitter:', config)
+        console.log('Textures passed to Emitter:', texturesForEmitter)
+
         // Cria o emitter. **Esta é a ÚNICA criação do emitter.**
         // A linha "this.emitter = new Emitter(...)" que estava mais abaixo deve ser removida.
-        this.emitter = new PIXI.particles.Emitter(emitterContainer, texturesForEmitter, config) // <-- CORRIGIDO: Usa PIXI.particles.Emitter
+        this.emitter = new PIXI.particles.Emitter(emitterContainer, texturesForEmitter, config)
 
         // Posiciona o emitter
         this.emitter.updateOwnerPos(emitterPosX, emitterPosY)
