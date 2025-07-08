@@ -1,14 +1,16 @@
-import { fountainConfig } from './emitterConfigs.js'
+// scripts/fireworks/fireworks.js
+
+// IMPORTAÇÕES FINAIS - REMOVE QUALQUER OUTRA IMPORTAÇÃO DE EMITTER
+import { Sprite, Texture, Text } from 'pixi.js'
 import { explodeRocket } from './explodeRocket.js'
-import ParticleExample from './ParticleExampleCustom.js'
+import { ManualFountain, initFountainEffect } from './fountainEffect.js' // ESTA É A IMPORTAÇÃO CHAVE
 
-// Import PixiJS components required for fireworks animations.
-import { Sprite, Text } from 'pixi.js'
-
-// Global variables to store the PixiJS Application instance and canvas center.
-// These will be passed once during initialization.
+// Variáveis PixiJS globais para o módulo fireworks.
 let _app
 let _canvasCenter
+
+// Lista de fontes manuais ativas (para poder parar todas)
+const activeManualFountains = new Set()
 
 /**
  * Creates and manages a single firework animation (either Fountain or Rocket).
@@ -22,25 +24,19 @@ let _canvasCenter
  * @param {number} velocityY - Vertical velocity for rocket type.
  */
 const createFirework = (type, colour, duration, x, y, velocityX, velocityY) => {
-  // Ensure PixiJS app and canvas center are initialized.
   if (!_app || !_canvasCenter) {
     console.error('PixiJS Application or canvasCenter not initialized for firework creation.')
     return
   }
 
   if (type === 'Fountain') {
-    fountainConfig.behaviors[3].config.color.list[1].value = colour
-
-    new ParticleExample(
-      _app,
-      ['assets/fountain.png'],
-      fountainConfig,
-      _canvasCenter.x - x,
-      _canvasCenter.y - y,
-      duration
-    )
+    // AQUI USAMOS A CLASSE ManualFountain IMPORTADA DO fountainEffect.js
+    const newFountain = new ManualFountain(_app, colour, duration, x, y)
+    activeManualFountains.add(newFountain)
   } else if (type === 'Rocket') {
+    // Lógica existente para o Rocket (mantida inalterada)
     let rocket
+    // Certifica-te que ./assets/particle.png está acessível e é uma imagem válida
     rocket = Sprite.from('./assets/particle.png')
     rocket.tint = parseInt(colour, 16)
     rocket.position.set(_canvasCenter.x - x, _canvasCenter.y - y)
@@ -48,17 +44,17 @@ const createFirework = (type, colour, duration, x, y, velocityX, velocityY) => {
 
     const loopRocket = (delta) => {
       const displacementX = (velocityX * delta) / 1000
-      const displacementY = (velocityY * delta) / 100
+      const displacementY = (velocityY * delta) / 100 // Ajusta isto se achares que a velocidade Y é estranha
 
       rocket.x += displacementX
-      rocket.y += displacementY * -1
+      rocket.y += displacementY * -1 // -1 para subir
     }
     _app.ticker.add(loopRocket)
 
     setTimeout(() => {
       _app.stage.removeChild(rocket)
-      _app.ticker.remove(loopRocket) // IMPORTANT: Remove ticker listener to prevent memory leaks
-      explodeRocket(_app, rocket.x, rocket.y, colour)
+      _app.ticker.remove(loopRocket) // IMPORTANT: Remover o listener do ticker para evitar fugas de memória
+      explodeRocket(_app, rocket.x, rocket.y, colour) // Chama explodeRocket (de explodeRocket.js)
     }, duration)
   }
 }
@@ -88,18 +84,18 @@ const showErrorText = (errorMessage) => {
 }
 
 /**
- * Initializes the Fireworks module and starts the sequence defined in fireworks.xml.
- * This function is designed to be called once by the main game logic.
+ * Initializes the Fireworks module. This function should be called once by the main game logic.
  * @param {PIXI.Application} appInstance - The main PixiJS application instance.
  * @param {object} canvasCenterInstance - An object with {x, y} coordinates of the canvas center.
  */
-export function initFireworks(appInstance, canvasCenterInstance) {
+export async function initFireworks(appInstance, canvasCenterInstance) {
+  // PRECISA SER ASYNC
   _app = appInstance
   _canvasCenter = canvasCenterInstance
 
-  // No longer adding updateFPS to ticker here as it's UI specific for the demo.
-  // No longer attaching event listeners for 'applySizeBtn'.
-  // The main game (slotGame.js) will dictate when fireworks are triggered.
+  // CHAMA A FUNÇÃO DE INICIALIZAÇÃO DO MÓDULO DA FONTE MANUAL PARA CARREGAR A TEXTURA
+  await initFountainEffect(_app, _canvasCenter)
+  console.log('Fireworks module and FountainEffect initialized.')
 }
 
 /**
@@ -127,6 +123,9 @@ export function triggerFireworksSequence() {
 
       let totalDuration = 0
 
+      // PARA ASSEGURAR QUE FOUNTAINS ANTERIORES SÃO PARADAS QUANDO UMA NOVA SEQUÊNCIA COMEÇA
+      stopAllFireworks()
+
       for (let i = 0; i < fireworkElements.length; i++) {
         const firework = fireworkElements[i]
         const beginTime = parseInt(firework.getAttribute('begin'))
@@ -151,11 +150,23 @@ export function triggerFireworksSequence() {
         }, beginTime)
       }
 
-      // Apenas para DEV, se quiseres que o ciclo se repita, mas provavelmente não para o jogo de slot
+      // Opcional: Se quiseres que a sequência se repita, descomenta a linha abaixo.
       // setTimeout(() => triggerFireworksSequence(), totalDuration);
     })
     .catch((error) => {
       showErrorText(`Ocorreu um erro ao carregar os fogos de artifício: ${error.message}`)
       console.error('Error fetching XML file for fireworks:', error)
     })
+}
+
+/**
+ * Função para parar todas as animações de fogos de artifício (incluindo as fontes).
+ * Pode ser útil se precisares de limpar o palco rapidamente (ex: no fim de um jogo).
+ */
+export function stopAllFireworks() {
+  // Destrói todas as fontes manuais ativas
+  activeManualFountains.forEach((fountain) => fountain.destroy())
+  activeManualFountains.clear() // Garante que o Set está vazio
+  // TODO: Adicionar lógica para parar foguetes ativos se necessário (eles já se limpam com o timeout)
+  console.log('Todos os fogos de artifício (fontes) foram interrompidos e limpos.')
 }
