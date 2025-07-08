@@ -1,6 +1,4 @@
-// scripts/fireworks/fountainEffect.js
-
-import { Sprite, Texture, Container } from 'pixi.js'
+import { Sprite, Container } from 'pixi.js'
 
 // Variáveis globais (a serem definidas externamente por initFountainEffect)
 let _app
@@ -23,6 +21,7 @@ class FountainParticle extends Sprite {
     this.timeAlive = 0 // Tempo de vida atual da partícula
     this.gravity = 0.5 // Força da gravidade (ajusta conforme necessário)
     this.initialAlpha = 1 // Alpha inicial
+    this.scale.set(0.5) // Size
   }
 
   /**
@@ -67,7 +66,7 @@ export class ManualFountain {
 
     this.particles = [] // Array de partículas desta fonte
     this.emissionTimer = 0 // Tempo até a próxima emissão
-    this.emissionInterval = 50 // Intervalo entre a criação de novas partículas (em ms)
+    this.emissionInterval = 10 // Intervalo entre a criação de novas partículas (em ms). Um valor menor significa que são criadas mais partículas por segundo.
 
     this.fountainActiveTime = 0 // Quanto tempo a fonte esteve ativa (para a duração)
     this.isEmitting = true // Se a fonte ainda deve emitir partículas
@@ -161,7 +160,7 @@ export async function initFountainEffect(appInstance, canvasCenterInstance) {
   _canvasCenter = canvasCenterInstance
 
   try {
-    _fountainParticleTexture = await PIXI.Assets.load('./assets/particle.png') // Ou './assets/fountain.png'
+    _fountainParticleTexture = await PIXI.Assets.load('./assets/particle.png')
     console.log('Textura da partícula da fonte carregada com sucesso para fountainEffect!')
   } catch (error) {
     console.error('Erro ao carregar a textura da partícula da fonte para fountainEffect:', error)
