@@ -1,6 +1,7 @@
 import { Assets } from 'pixi.js'
 import * as UIManager from './uiManager.js'
 import * as ReelManager from './reelManager.js'
+import * as Fireworks from '../fireworks/fireworks.js'
 
 // --- Game Variables ---
 const symbolImagePaths = [
@@ -16,6 +17,10 @@ const SPIN_COST = 100
 let balance = 1000 // Initial player balance
 
 let spinning = false // Game state variable to control spinning.
+
+// Variáveis PixiJS globais para o slotGame, necessárias para passar aos módulos
+let _appInstance
+let _canvasCenterInstance
 
 // --- Core Game Functions ---
 
@@ -81,6 +86,9 @@ function checkWin() {
     balance += winAmount
     UIManager.updateBalanceDisplay(balance) // Update balance via UIManager
     UIManager.showWinLossMessage(`GANHASTE ${winAmount}!`, true) // Pass true for win
+
+    // --- Call fireworks ---
+    Fireworks.triggerFireworksSequence()
   } else {
     UIManager.showWinLossMessage('AZAR!', false) // Pass false for loss
   }
@@ -92,7 +100,10 @@ function checkWin() {
  * @param {Application} appInstance - The main PixiJS Application instance.
  * @param {{x: number, y: number}} canvasCenterInstance - Object containing the x, y coordinates of the canvas center.
  */
-export async function initSlotGame(appInstance, canvasCenterInstance) {
+export async function initSlotGame(app, canvasCenter) {
+  _appInstance = app // Store PixiJS app instance
+  _canvasCenterInstance = canvasCenter // Store canvas center instance
+
   // Load symbol textures here.
   const loadedAssets = await Assets.load(symbolImagePaths)
   slotTextures = symbolImagePaths.map((path) => loadedAssets[path])
@@ -104,7 +115,10 @@ export async function initSlotGame(appInstance, canvasCenterInstance) {
   )
 
   // Initialize ReelManager with PixiJS app and loaded textures
-  ReelManager.initReelManager(appInstance, slotTextures)
+  ReelManager.initReelManager(_appInstance, slotTextures)
+
+  // Inicializa o módulo de fogos de artifício
+  Fireworks.initFireworks(_appInstance, _canvasCenterInstance)
 
   // Set initial bet cost and balance displays
   UIManager.setBetCostDisplay(SPIN_COST)
