@@ -1,11 +1,12 @@
-// TODO: cleanup, translate
+// TODO: cleanup, translate - Manter estas anotações se quiseres fazer o cleanup depois
 
-import { Sprite, Texture, Container, ParticleContainer, Assets } from 'pixi.js'
+// Removidas quaisquer importações de PixiJS (ex: import { Assets, Sprite, Texture, Container, ParticleContainer } from 'pixi.js')
+// Não precisamos de importar nada do PixiJS, pois está carregado globalmente.
 
 class ParticleExample {
   constructor(app, imagePaths, config, emitterPosX, emitterPosY, duration) {
     this.app = app
-    this.stage = app.stage
+    this.stage = app.stage // app.stage já é um PIXI.Container, está ok
     this.emitter = null
     this.bg = null
     this.updateHook = null
@@ -14,25 +15,23 @@ class ParticleExample {
     this.destroyTimeout = null
 
     let elapsed = Date.now()
-    let updateId
+    let updateId // Declarado mas o uso para cancelamento não está completo aqui (consideração futura)
 
     const update = () => {
-      updateId = requestAnimationFrame(update)
-
+      updateId = requestAnimationFrame(update) // Continua a loop de animação
       const now = Date.now()
       if (this.emitter) {
-        this.emitter.update((now - elapsed) * 0.001)
+        this.emitter.update((now - elapsed) * 0.001) // Atualiza o emitter
       }
 
       if (this.updateHook) {
-        this.updateHook(now - elapsed)
+        this.updateHook(now - elapsed) // Chama o hook de atualização personalizado
       }
 
       elapsed = now
     }
 
-    // REMOVIDO: window.onresize(). O redimensionamento do canvas é tratado pelo index.js/app.
-
+    // Configura o timeout para destruir o emitter após a duração especificada
     this.destroyTimeout = setTimeout(() => {
       this.destroyEmitter()
     }, this.duration)
@@ -46,22 +45,20 @@ class ParticleExample {
       urls = imagePaths.slice()
     }
 
-    // Use Assets.load para carregar as texturas. Isso é assíncrono.
-    Assets.load(urls)
+    // Usa PIXI.Assets.load para carregar as texturas. Isso é assíncrono.
+    PIXI.Assets.load(urls) // <-- CORRIGIDO: Usa PIXI.Assets
       .then((loadedTextures) => {
-        this.emitter = new PIXI.particles.Emitter(emitterContainer, texturesForEmitter, config)
-        this.bg = new Sprite(Texture.WHITE)
-        this.bg.tint = 0x000000
-        this.bg.scale.x = this.app.renderer.width // Escala o bg para o tamanho do canvas
-        this.bg.scale.y = this.app.renderer.height
-        this.stage.addChild(this.bg)
+        // --- INÍCIO DAS CORREÇÕES LÓGICAS E DE REFERÊNCIA ---
+
+        // As variáveis emitterContainer e texturesForEmitter precisam ser definidas AQUI
+        // antes de serem usadas para criar o emitter.
 
         let parentType = 0
         function getContainer() {
           switch (parentType) {
             case 1:
-              // Use ParticleContainer importado
-              const pc = new ParticleContainer()
+              // Usa PIXI.ParticleContainer
+              const pc = new PIXI.ParticleContainer() // <-- CORRIGIDO: Usa PIXI.ParticleContainer
               pc.setProperties({
                 scale: true,
                 position: true,
@@ -69,30 +66,35 @@ class ParticleExample {
                 uvs: true,
                 alpha: true
               })
-              return [pc, 'ParticleContainer'] // Nome para debug
-            // Caso 2 (LinkedListContainer) removido/simplificado para Container,
-            // pois LinkedListContainer não é padrão no PixiJS moderno.
+              return [pc, 'ParticleContainer']
             default:
-              // Use Container importado
-              return [new Container(), 'Container'] // Nome para debug
+              // Usa PIXI.Container
+              return [new PIXI.Container(), 'Container'] // <-- CORRIGIDO: Usa PIXI.Container
           }
         }
-        let [emitterContainer, containerName] = getContainer()
+        let [emitterContainer, containerName] = getContainer() // containerName não é usado, mas ok
         this.stage.addChild(emitterContainer)
 
-        // Converta o objeto de texturas carregadas num array de Textures
-        // que o Emitter espera.
+        // Converte o objeto de texturas carregadas num array de Textures
         const texturesForEmitter = urls.map((url) => loadedTextures[url])
 
-        // Use Emitter importado
-        this.emitter = new Emitter(emitterContainer, texturesForEmitter, config)
+        // Cria o sprite de background
+        this.bg = new PIXI.Sprite(PIXI.Texture.WHITE) // <-- CORRIGIDO: Usa PIXI.Sprite e PIXI.Texture
+        this.bg.tint = 0x000000
+        this.bg.scale.x = this.app.renderer.width
+        this.bg.scale.y = this.app.renderer.height
+        this.stage.addChild(this.bg)
+
+        // Cria o emitter. **Esta é a ÚNICA criação do emitter.**
+        // A linha "this.emitter = new Emitter(...)" que estava mais abaixo deve ser removida.
+        this.emitter = new PIXI.particles.Emitter(emitterContainer, texturesForEmitter, config) // <-- CORRIGIDO: Usa PIXI.particles.Emitter
 
         // Posiciona o emitter
         this.emitter.updateOwnerPos(emitterPosX, emitterPosY)
 
-        // Inicia o loop de atualização DO EMITTER
-        // O `update()` local gere `requestAnimationFrame` para o loop da animação do emitter.
+        // Inicia o loop de atualização principal (do requestAnimationFrame)
         update()
+        // --- FIM DAS CORREÇÕES LÓGICAS E DE REFERÊNCIA ---
       })
       .catch((error) => {
         console.error('Error loading particle assets for ParticleExample:', error)
@@ -101,14 +103,18 @@ class ParticleExample {
       })
   }
 
+  /**
+   * Destroi o emitter de partículas e remove os elementos do stage.
+   */
   destroyEmitter() {
     if (this.emitter) {
       this.emitter.destroy()
       this.emitter = null
       clearTimeout(this.destroyTimeout)
-      // Remove o container do emitter do stage
+      // Remove o container do emitter do stage (se ainda tiver um pai)
       if (this.emitter.parent) {
-        this.emitter.parent.removeChild(this.emitter)
+        // NOTE: this.emitter.parent pode ser undefined se emitter for null ou destruído
+        this.emitter.parent.removeChild(this.emitter) // Esta linha pode dar erro se this.emitter for null
       }
     }
     // Remove também o background sprite

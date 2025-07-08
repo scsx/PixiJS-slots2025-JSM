@@ -1,5 +1,3 @@
-import { Container, Sprite, Graphics } from 'pixi.js'
-
 // --- Reel Specific Configuration (Constants) ---
 const REEL_WIDTH = 280
 const SYMBOL_SIZE = 160
@@ -10,7 +8,7 @@ const SPIN_DURATION_BASE = 2000
 
 // Internal variables for PixiJS elements
 const reels = [] // Array to hold reel objects. Each reel is a PixiJS Container.
-const reelContainer = new Container() // Main container for all reels.
+const reelContainer = new PIXI.Container() // Main container for all reels.
 
 let _app // Reference to the PixiJS Application instance
 let _slotTextures // Array of loaded PixiJS Textures for symbols
@@ -209,12 +207,12 @@ export function initReelManager(appInstance, slotTexturesArray) {
 
   // Create individual reels.
   for (let i = 0; i < 3; i++) {
-    const rc = new Container() // Reel Container for individual reel
+    const rc = new PIXI.Container() // Reel Container for individual reel
     rc.x = i * REEL_WIDTH // Position each reel horizontally.
     reelContainer.addChild(rc)
 
     // Create the mask for each reel.
-    const reelMask = new Graphics()
+    const reelMask = new PIXI.Graphics()
     reelMask.beginFill(0x000000) // Mask color doesn't matter, only shape
     // The mask should be drawn in the local coordinates of the *rc* (the individual reel container)
     reelMask.drawRoundedRect(0, 0, REEL_WIDTH, visibleSlotHeight, 15) // Rounded corners
@@ -232,7 +230,9 @@ export function initReelManager(appInstance, slotTexturesArray) {
 
     // Populate the reel with symbols.
     for (let j = 0; j < NUM_SYMBOLS_PER_REEL_STRIP; j++) {
-      const symbol = new Sprite(_slotTextures[Math.floor(Math.random() * _slotTextures.length)])
+      const symbol = new PIXI.Sprite(
+        _slotTextures[Math.floor(Math.random() * _slotTextures.length)]
+      )
       symbol.anchor.set(0.5) // Center the sprite on its position.
       symbol.scale.x = SYMBOL_SIZE / symbol.width
       symbol.scale.y = SYMBOL_SIZE / symbol.height

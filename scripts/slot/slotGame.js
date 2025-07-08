@@ -1,4 +1,3 @@
-import { Assets } from 'pixi.js'
 import * as UIManager from './uiManager.js'
 import * as ReelManager from './reelManager.js'
 import * as Fireworks from '../fireworks/fireworks.js'
@@ -11,14 +10,14 @@ const symbolImagePaths = [
   'assets/fruits/avocado.png',
   'assets/fruits/corn.png'
 ]
-let slotTextures = [] // Will be populated after assets load
+let slotTextures = [] // Will be populated after assets load.
 
 const SPIN_COST = 100
-let balance = 1000 // Initial player balance
+let balance = 1000 // Initial player balance.
 
 let spinning = false // Game state variable to control spinning.
 
-// Variáveis PixiJS globais para o slotGame, necessárias para passar aos módulos
+// Global PixiJS vars for modules.
 let _appInstance
 let _canvasCenterInstance
 
@@ -105,7 +104,7 @@ export async function initSlotGame(app, canvasCenter) {
   _canvasCenterInstance = canvasCenter // Store canvas center instance
 
   // Load symbol textures here.
-  const loadedAssets = await Assets.load(symbolImagePaths)
+  const loadedAssets = await PIXI.Assets.load(symbolImagePaths)
   slotTextures = symbolImagePaths.map((path) => loadedAssets[path])
 
   // Initialize UIManager, passing callbacks for spin buttons
@@ -117,7 +116,7 @@ export async function initSlotGame(app, canvasCenter) {
   // Initialize ReelManager with PixiJS app and loaded textures
   ReelManager.initReelManager(_appInstance, slotTextures)
 
-  // Inicializa o módulo de fogos de artifício
+  // Start fireworks module
   Fireworks.initFireworks(_appInstance, _canvasCenterInstance)
 
   // Set initial bet cost and balance displays

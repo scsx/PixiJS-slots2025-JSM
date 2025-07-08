@@ -1,6 +1,3 @@
-import * as PIXI_NAMESPACE from 'pixi.js'
-window.PIXI = PIXI_NAMESPACE
-
 import { initSlotGame } from './scripts/slot/slotGame.js'
 
 // --- PixiJS Application Setup ---
@@ -9,7 +6,7 @@ import { initSlotGame } from './scripts/slot/slotGame.js'
  * Creates the main PixiJS application instance using the imported Application class.
  * @type {Application}
  */
-const app = new PIXI_NAMESPACE.Application({
+const app = new PIXI.Application({
   width: 1280, // Width of the rendering area for the game
   height: 720, // Height of the rendering area for the game
   backgroundColor: '#0f3461',

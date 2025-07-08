@@ -2,9 +2,6 @@ import { fountainConfig } from './emitterConfigs.js'
 import { explodeRocket } from './explodeRocket.js'
 import ParticleExample from './ParticleExampleCustom.js'
 
-// Import PixiJS components required for fireworks animations.
-import { Sprite, Text } from 'pixi.js'
-
 // Global variables to store the PixiJS Application instance and canvas center.
 // These will be passed once during initialization.
 let _app
@@ -41,7 +38,7 @@ const createFirework = (type, colour, duration, x, y, velocityX, velocityY) => {
     )
   } else if (type === 'Rocket') {
     let rocket
-    rocket = Sprite.from('./assets/particle.png')
+    rocket = PIXI.Sprite.from('./assets/particle.png')
     rocket.tint = parseInt(colour, 16)
     rocket.position.set(_canvasCenter.x - x, _canvasCenter.y - y)
     _app.stage.addChild(rocket)
@@ -73,7 +70,7 @@ const showErrorText = (errorMessage) => {
     console.error('PixiJS Application not initialized for error text.')
     return
   }
-  const errorText = new Text(errorMessage, {
+  const errorText = new PIXI.Text(errorMessage, {
     fontFamily: 'Arial',
     fontSize: 30,
     fill: 'white',
@@ -150,12 +147,9 @@ export function triggerFireworksSequence() {
           createFirework(type, colour, duration, x, y, velocityX, velocityY)
         }, beginTime)
       }
-
-      // Apenas para DEV, se quiseres que o ciclo se repita, mas provavelmente não para o jogo de slot
-      // setTimeout(() => triggerFireworksSequence(), totalDuration);
     })
     .catch((error) => {
-      showErrorText(`Ocorreu um erro ao carregar os fogos de artifício: ${error.message}`)
+      showErrorText(`Error loading fireworks: ${error.message}`)
       console.error('Error fetching XML file for fireworks:', error)
     })
 }
