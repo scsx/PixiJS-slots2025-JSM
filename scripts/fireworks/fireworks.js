@@ -150,8 +150,6 @@ export function triggerFireworksSequence() {
         }, beginTime)
       }
 
-      // Opcional: Se quiseres que a sequência se repita, descomenta a linha abaixo.
-      // setTimeout(() => triggerFireworksSequence(), totalDuration);
     })
     .catch((error) => {
       showErrorText(`Ocorreu um erro ao carregar os fogos de artifício: ${error.message}`)
