@@ -109,21 +109,6 @@ body {
   transform: translateY(0);
 }
 
-/* .result {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 60;
-  font-size: 3rem;
-  color: var(--gold);
-  opacity: 0;
-  transition-property: opacity;
-  transition-duration: 500ms;
-  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
-  text-align: center;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-} */
-
 .result {
   position: absolute;
   top: -30px;
@@ -163,6 +148,18 @@ body {
 
 .result.lose-bg {
   background-image: url('../assets/ui/pirate-loose.png');
+}
+
+.repo-link {
+  z-index: 50;
+  font-size: 30px;
+  color: var(--gold);
+  margin-top: 20px;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.repo-link:hover {
+  color: white;
 }
 
 .message-box {
