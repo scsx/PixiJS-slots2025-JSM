@@ -5,3 +5,7 @@ Based in:
 
 Previously:
 [PixiJS-JSM](https://github.com/scsx/PixiJS-JSM)
+
+## Previews
+![Initial](previews/1.png)
+![Win](previews/2.png)
