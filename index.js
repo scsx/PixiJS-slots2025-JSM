@@ -1,32 +1,33 @@
 import * as PIXI_NAMESPACE from 'pixi.js'
+// Expose PIXI globally for broader compatibility, especially with non-module PixiJS plugins.
 window.PIXI = PIXI_NAMESPACE
 
 import { initSlotGame } from './scripts/slot/slotGame.js'
 
-// --- PixiJS Application Setup ---
-
 /**
- * Creates the main PixiJS application instance using the imported Application class.
- * @type {Application}
+ * Initializes the main PixiJS application instance.
+ * Configures rendering dimensions, background, and anti-aliasing.
  */
 const app = new PIXI_NAMESPACE.Application({
-  width: 1280, // Width of the rendering area for the game
-  height: 720, // Height of the rendering area for the game
+  width: 1280,
+  height: 720,
   backgroundColor: '#0f3461',
-  antialias: true // Enables anti-aliasing for smoother edges of rendered graphics
+  antialias: true // Smooths rendered graphics edges
 })
 
-// Find the game container in the HTML and append the PixiJS canvas to it.
+// Attaches the PixiJS canvas to the designated game area in the DOM.
 const gameArea = document.getElementById('game-area')
 if (gameArea) {
   gameArea.appendChild(app.view)
 } else {
+  // Fallback if the specific game area element is not found.
   document.body.appendChild(app.view)
-  console.warn("Element with ID 'game-area' not found. Appending PixiJS view to body.")
+  console.error("Element with ID 'game-area' not found. Appending PixiJS view to body.")
 }
 
 /**
- * Calculates and stores the center coordinates of the PixiJS canvas.
+ * Stores the calculated center coordinates of the PixiJS canvas.
+ * Useful for positioning game elements relative to the stage center.
  * @type {{x: number, y: number}}
  */
 const canvasCenter = {
@@ -34,18 +35,15 @@ const canvasCenter = {
   y: app.renderer.height / 2
 }
 
-// ------------------------------------------------------------------------------------
-// MAIN ENTRY POINT FOR THE SLOTS GAME:
-// Initializes the slot game module.
-// ------------------------------------------------------------------------------------
-
 /**
- * Initializes the slot game by calling its main setup function.
- * @param {Application} app - The PixiJS application instance.
+ * Asynchronous entry point for initializing the slot game module.
+ * Ensures the PixiJS application and canvas dimensions are ready before game setup.
+ * @param {PIXI_NAMESPACE.Application} app - The PixiJS application instance.
  * @param {{x: number, y: number}} canvasCenter - The canvas center coordinates.
  */
 async function startApp() {
-  await initSlotGame(app, canvasCenter) // initSlotGame is internally async.
+  await initSlotGame(app, canvasCenter) // Delegates game-specific initialization.
 }
 
+// Begin application setup.
 startApp()
