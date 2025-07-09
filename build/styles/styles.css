@@ -1,0 +1,181 @@
+body {
+  position: relative;
+  font-family: 'Bangers', system-ui;
+  box-sizing: border-box;
+  background-color: #0f3461;
+  background-image: url('../assets/ui/bg.jpg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  padding-top: 70px;
+
+  --gold: #ffd700;
+}
+
+.deco-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 50%;
+  background-image: url('../assets/ui/bg.jpg');
+  background-size: cover;
+  background-position: right;
+  background-repeat: no-repeat;
+}
+
+.header {
+  position: absolute;
+  width: 900px;
+  height: 100px;
+  background-image: url('../assets/ui/wood-label-gemini.png');
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-size: 25px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  z-index: 60;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.header .h1 {
+  position: relative;
+  margin-top: 8px;
+  font-size: 55px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  z-index: 60;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+.balance {
+  position: absolute;
+  top: 11px;
+  left: 30px;
+  width: 331px;
+  height: 51px;
+  background-image: url('../assets/ui/wood-label.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-size: 25px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  z-index: 60;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.balance span {
+  font-size: 30px;
+}
+
+.frame-bg {
+  background-image: url('../assets/ui/frame.png');
+}
+
+.spin-button {
+  width: 135px;
+  height: 82px;
+  background-image: url('../assets/ui/wood-btn.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+  font-size: 50px;
+  color: var(--gold);
+  cursor: pointer;
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.spin-button:hover {
+  transform: translateY(-0.25rem);
+  color: white;
+}
+
+.spin-button:active {
+  transform: translateY(0);
+}
+
+.result {
+  position: absolute;
+  top: -30px;
+  right: 50px;
+  z-index: 60;
+  opacity: 0;
+  transition-property: opacity;
+  transition-duration: 500ms;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  width: 200px;
+  height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  background-size: contain;
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-image: none;
+}
+
+.result .result-message {
+  background-color: #ea3130;
+  border-radius: 100%;
+  padding: 5px 30px;
+  font-size: 50px;
+  color: white;
+  text-align: center;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+  white-space: nowrap;
+  box-shadow: 5px 5px 0px var(--gold);
+}
+
+.result.win-bg {
+  background-image: url('../assets/ui/pirate-win.png');
+}
+
+.result.lose-bg {
+  background-image: url('../assets/ui/pirate-loose.png');
+}
+
+.repo-link {
+  z-index: 50;
+  font-size: 30px;
+  color: var(--gold);
+  margin-top: 20px;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.repo-link:hover {
+  color: white;
+}
+
+.message-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+p#message-text {
+  font-size: 45px;
+  color: var(--gold);
+}
+
+#message-ok-button {
+  font-size: 45px;
+  padding: 20px;
+}

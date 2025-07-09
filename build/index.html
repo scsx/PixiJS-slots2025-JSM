@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pirate Slot Game</title>
+    <link data-rh="true" rel="icon" href="./assets/favicon.png" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles/styles.css" />
+
+    <script type="importmap">
+      {
+        "imports": {
+          "pixi.js": "https://esm.sh/pixi.js@7.x.x",
+          "./scripts/slot/slotGame.js": "./scripts/slot/slotGame.js",
+          "./scripts/slot/uiManager.js": "./scripts/slot/uiManager.js",
+          "./scripts/slot/reelManager.js": "./scripts/slot/reelManager.js",
+          "./scripts/fireworks/fireworks.js": "./scripts/fireworks/fireworks.js",
+          "./scripts/fireworks/fountainEffect.js": "./scripts/fireworks/fountainEffect.js",
+          "./scripts/fireworks/explodeRocket.js": "./scripts/fireworks/explodeRocket.js"
+        }
+      }
+    </script>
+  </head>
+
+  <body class="flex flex-col items-center justify-center min-h-screen">
+    <div class="deco-right"></div>
+
+    <div class="relative w-[1408px] h-[783px]">
+      <div
+        class="absolute inset-0 frame-bg bg-contain bg-center bg-no-repeat z-40 pointer-events-none top-4"></div>
+      <div class="header absolute left-1/2 -translate-x-1/2 -top-[50px]">
+        <h1 class="h1">Caça-níquel do Pirata</h1>
+      </div>
+      <div class="balance">Saldo: <span id="balance" class="ml-4 text-white">0</span></div>
+      <div id="result" class="result">
+        <p id="resultMessage" class="result-message"></p>
+      </div>
+      <div
+        id="game-area"
+        class="absolute w-[1280px] h-[720px] z-30 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -mt-4"></div>
+
+      <div class="absolute bottom-0 z-50 flex mt-8 space-x-4 left-1/2 -translate-x-1/2">
+        <button id="spinButton" class="spin-button">Spin</button>
+        <button id="autoWin" class="spin-button">Win</button>
+      </div>
+    </div>
+
+    <a class="repo-link" target="_blank" href="https://github.com/scsx/PixiJS-slots2025-JSM"
+      >repo</a
+    >
+
+    <!-- Warnings -->
+    <div
+      id="message-box"
+      class="absolute bottom-8 right-8 message-box bg-gray-700 text-gray-200 p-8 rounded-xl shadow-2xl z-50 hidden text-center border border-gray-600">
+      <p id="message-text"></p>
+      <button
+        id="message-ok-button"
+        class="mt-4 py-2 px-4 text-base bg-blue-500 text-white rounded-lg border-none cursor-pointer transition-colors duration-300 hover:bg-blue-600">
+        OK
+      </button>
+    </div>
+
+    <script type="module" src="./index.js"></script>
+  </body>
+</html>
